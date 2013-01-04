@@ -27,7 +27,6 @@ boolean SerialEnabled;      // Set to "false" until we have a successful connect
 void setup() {
   size(250, 250,P2D);
   minim = new Minim(this);
-  minim.debugOn();
   in = minim.getLineIn(Minim.STEREO, 625);
    String portName = Serial.list()[0];
    peggyPort = new Serial(this, portName, 115200);    // CHANGE_HERE
