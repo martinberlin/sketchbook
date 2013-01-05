@@ -8,7 +8,24 @@
 PImage a;  // Declare variable "a" of type PImage
 import processing.serial.*;
 import ddf.minim.*;
+int amp=20;
+Minim minim;
+AudioInput in;
 
+
+Serial peggyPort;
+PImage peggyImage = new PImage(25,25);
+byte [] peggyHeader = new byte[] { (byte)0xde, (byte)0xad, (byte)0xbe,(byte)0xef,1,0 };
+byte [] peggyFrame = new byte[13*25];
+
+int size = 60;       // Width of the shape
+float xpos, ypos;    // Starting position of shape    
+
+float xspeed = 20;  // Speed of the shape
+float yspeed = 8;  // Speed of the shape
+
+int xdirection = 1;  // Left or Right
+int ydirection = 1;  // Top to Bottom
 
 void setup() {
   size(200, 200);
@@ -30,30 +47,9 @@ void setup() {
 /**
  * Bounce code modified from the Processing samples and modified to display on a Peggy 2.. 
  
- BE SURE TO CHANGE THE SERIAL PORT NAME!! IN THE Setup() METHOD!
-
-*/ 
-import processing.serial.*;
-import ddf.minim.*;
-
-int amp=20;
-Minim minim;
-AudioInput in;
+*/
 
 
-Serial peggyPort;
-PImage peggyImage = new PImage(25,25);
-byte [] peggyHeader = new byte[] { (byte)0xde, (byte)0xad, (byte)0xbe,(byte)0xef,1,0 };
-byte [] peggyFrame = new byte[13*25];
-
-int size = 60;       // Width of the shape
-float xpos, ypos;    // Starting position of shape    
-
-float xspeed = 20;  // Speed of the shape
-float yspeed = 8;  // Speed of the shape
-
-int xdirection = 1;  // Left or Right
-int ydirection = 1;  // Top to Bottom
 
 
 // this method creates a PImage that is a copy 

@@ -1,9 +1,4 @@
-/**
- * Load and Display 
- * 
- * Images can be loaded and displayed to the screen at their actual size
- * or any other size. 
- */
+/* OpenProcessing Tweak of *@*http://www.openprocessing.org/sketch/14467*@* */
 
 import ddf.minim.*;
 //Serial Peggy initialization
@@ -13,68 +8,54 @@ PImage peggyImage = new PImage(25,25);
 byte [] peggyHeader = new byte[] { (byte)0xde, (byte)0xad, (byte)0xbe,(byte)0xef,1,0 };
 byte [] peggyFrame = new byte[13*25];
 
-
-int amp=400;
 Minim minim;
 AudioInput in;
 
-
-void setup() {
-  size(200, 200);
-  noStroke();
-  frameRate(30);
-  smooth();
-  // Set the starting position of the shape
-  xpos = width/2;
-  ypos = height/2;
-  
-  minim = new Minim(this);
-  minim.debugOn();
-  in = minim.getLineIn(Minim.STEREO, 625);
-  
-   String portName = Serial.list()[0];
-   peggyPort = new Serial(this, portName, 115200);    // CHANGE_HERE
-     
-}
-/**
- * Bounce code modified from the Processing samples and modified to display on a Peggy 2.. 
- 
- BE SURE TO CHANGE THE SERIAL PORT NAME!! IN THE Setup() METHOD!
-
-*/ 
-
-int size = 60;       // Width of the shape
-float xpos, ypos;    // Starting position of shape    
-
-float xspeed = 2.8;  // Speed of the shape
-float yspeed = 2.2;  // Speed of the shape
-
-int xdirection = 1;  // Left or Right
-int ydirection = 1;  // Top to Bottom
-
-
-void draw() 
+void setup()
 {
-  background(10);
+  size(200, 200, P2D);
+  frameRate(20);
+  minim = new Minim(this);
+ // minim.debugOn();
   
-  // Update the position of the shape
-  xpos = xpos + ( xspeed * xdirection );
-  ypos = ypos + ( yspeed * ydirection );
+  // get a line in from Minim, default bit depth is 16
+  in = minim.getLineIn(Minim.STEREO, 512);
   
-  // Test to see if the shape exceeds the boundaries of the screen
-  // If it does, reverse its direction by multiplying by -1
-  if (xpos > width-size || xpos < 0) {
-    xdirection *= -1;
-  }
-  if (ypos > height-size || ypos < 0) {
-    ydirection *= -1;
+ String portName = Serial.list()[0];
+  peggyPort = new Serial(this, portName, 115200);    // CHANGE_HERE
+  
+}
+
+void draw()
+{
+  background(0);
+  
+  // draw the waveforms
+  for(int i = 0; i < in.bufferSize() - 1; i++)
+  {
+   fill(255,255,255,255);
+  
+    rect(i, 50 + in.left.get(i)*50, i+1, 50 + in.left.get(i+1)*50);
+    rect(i, 250 + in.right.get(i)*50, i+1, 50 + in.right.get(i+1)*50);
+    fill(255,255,255);
+  //  rect(i, 400 + in.right.get(i)*200, i+1, 50 + in.right.get(i+1)*200);
+    //rect(i, 150 + in.right.get(i)*200, i+1, 50 + in.right.get(i+1)*200);
   }
 
-  // Draw the shape
-  ellipse(xpos+size/2, ypos+size/2, size, size);
-
+  
   renderToPeggy(grabDisplay());
 }
+
+
+void stop()
+{
+  // always close Minim audio classes when you are done with them
+  in.close();
+  minim.stop();
+  
+  super.stop();
+}
+
 // this method creates a PImage that is a copy 
 // of the current processing display.
 // Its very crude and inefficient, but it works.
