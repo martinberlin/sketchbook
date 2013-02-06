@@ -16,7 +16,7 @@ int amp=400;
 Minim minim;
 AudioInput in;
 
-
+//To have this working faster, cam should be set to capture 25x25
 void setup() {
   size(160, 120);
   noStroke();
